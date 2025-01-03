@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    min_max (0.1.6)
+    min_max (0.1.7)
       rb_sys (~> 0.9.39)
 
 GEM
@@ -28,6 +28,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
   x86_64-darwin-21
 
 DEPENDENCIES

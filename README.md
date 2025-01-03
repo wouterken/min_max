@@ -1,8 +1,8 @@
 # MinMax Heap
 
-The MinMax Heap gem provides a high-performance minmax heap implementation for Ruby, written in Rust. 
+The MinMax Heap gem provides a high-performance minmax heap implementation for Ruby, written in Rust.
 The gem wraps the excellent [min-max-heap-rs](https://github.com/tov/min-max-heap-rs) Rust library.
-It allows for the creation of a min-max-heap and supporting operations like pushing and popping multiple items, iterating over heap items, and converting heaps to arrays. 
+It allows for the creation of a min-max-heap and supporting operations like pushing and popping multiple items, iterating over heap items, and converting heaps to arrays.
 
 ## Features
 
@@ -13,9 +13,9 @@ It allows for the creation of a min-max-heap and supporting operations like push
 - Convert heap to array with `#to_a`, `#to_a_asc` and `#to_a_desc`.
 
 ## Prequisites
-- You must have a working Rust compiler installed on your system. 
+- You must have a working Rust compiler installed on your system.
 ```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | 
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
 ```
 
 ## Installation
@@ -79,6 +79,12 @@ heap.to_a_desc # => [5, 3, 1]
 heap.to_a # => Heap order
 ```
 
+## Iterate in order
+```ruby
+heap.each_asc   #<Enumerator: ...>
+heap.each_desc  #<Enumerator: ...>
+```
+
 ## Peek at min and max items
 ```ruby
 heap.peek_min # => 1
@@ -119,4 +125,3 @@ You can run the `benchmarks/benchmarks.rb` file inside this repository for compa
 min-max should be the fastest to pop from a large heap, often by a significant margin, while also offering both min and max operations from a single heap.
 Some options are faster at pushing individual items, but the difference is within the same order of magnitude.
 Batch pushing to min-max also significantly increases insert speed.
-

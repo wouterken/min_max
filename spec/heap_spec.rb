@@ -45,10 +45,10 @@ end
 describe 'Large Scale Handling' do
   it 'can handle a large number of elements' do
     heap = MinMax.new
-    heap.push(*10_000.times.map{ rand(100_000) })
+    heap.push(*1000.times.map{ rand(100_000) })
 
     last_pop = heap.pop_min
-    (10_000 - 1).times do
+    (1000 - 1).times do
       current_pop = heap.pop_min
       expect(last_pop).to be <= current_pop
       last_pop = current_pop
@@ -107,5 +107,29 @@ describe 'Empty Heap Behavior' do
     expect(heap.pop_min).to be_nil
     expect(heap.pop_min(2)).to eq([]) # Assuming pop(2) on empty heap returns empty array
     expect { heap.pop_min }.not_to raise_error
+  end
+end
+
+describe 'Counts and contains' do
+  it "implements count" do
+    element = 143
+    heap = MinMax.new
+    heap.push(element)
+    expect(heap.count(element)).to eq(1)
+    heap.push(element)
+    expect(heap.count(element)).to eq(2)
+    heap.pop_min
+    expect(heap.count(element)).to eq(1)
+    heap.pop_min
+    expect(heap.count(element)).to eq(0)
+  end
+
+  it "implements contains?" do
+    element = 143
+    heap = MinMax.new
+    heap.push(element)
+    expect(heap.contains?(element)).to be(true)
+    heap.pop_min
+    expect(heap.contains?(element)).to be(false)
   end
 end

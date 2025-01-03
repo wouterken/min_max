@@ -16,7 +16,7 @@ class MinMax
     self._new.tap{|s|
       s.instance_eval{
         @priority_blk = (blk || proc{|x| x.respond_to?(:priority) ? x.priority : x.to_i })
-        @storage = Hash.new{|h,k| h[k] = [0, nil] }
+        @storage = Hash.new{|h,k| h[k] = [0, nil] }.compare_by_identity
       }
       s.push(*args)
     }
@@ -24,13 +24,13 @@ class MinMax
 
   def push(*args)
     mapped = args.map do |a|
-      hash = a.hash
-      entry = self.storage[hash]
+      object_id = a.object_id
+      entry = self.storage[object_id]
       entry[0] += 1
       entry[1] ||= a
       [
         (self.priority_blk.call(a) rescue 0),
-        hash
+        object_id
       ]
     end
      _push(mapped)
@@ -81,18 +81,30 @@ class MinMax
   end
 
   def count(val)
-    counts.has_key?(val.hash) ? counts[val.hash] : 0
+    storage.has_key?(val.object_id) ? storage[val.object_id].first : 0
   end
 
   def contains?(val)
-    counts.has_key?(val.hash) && counts[val.hash] > 0
+    storage.has_key?(val.object_id)
   end
 
   def to_a_asc
+    return to_enum(:to_a_asc) unless block_given?
     _to_a_asc.map{|p| retrieve(p, false) }
   end
 
   def to_a_desc
+    return to_enum(:to_a_desc) unless block_given?
+    _to_a_desc.map{|p| retrieve(p, false) }
+  end
+
+  def each_asc
+    return to_enum(:each_asc) unless block_given?
+    _to_a_asc.each{|p| yield retrieve(p, false) }
+  end
+
+  def each_desc
+    return to_enum(:each_desc) unless block_given?
     _to_a_desc.map{|p| retrieve(p, false) }
   end
 
@@ -101,11 +113,10 @@ class MinMax
   end
 
   private
-  def retrieve(hash, remove=true)
-    entry = self.storage[hash]
-    self.storage.delete(hash) if remove && (entry[0] -= 1) == 0
+  def retrieve(object_id, remove=true)
+    entry = self.storage[object_id]
+    self.storage.delete(object_id) if remove && (entry[0] -= 1) == 0
     entry[1]
   end
 
 end
-
